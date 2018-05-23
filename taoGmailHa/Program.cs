@@ -29,10 +29,35 @@ namespace taoGmailHa
             //addMailAfterConfirmation(driver, code);
 
             IWebDriver driver1 = new FirefoxDriver(profile);
-            driver1.Navigate().GoToUrl("http://sms-activate.ru/");
-            driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
-            System.Threading.Thread.Sleep(time);
-            var buttonLikeList = driver1.FindElements(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)"));
+            driver1.Navigate().GoToUrl("http://sms-activate.ru/index.php?act=getNumber");
+
+
+            //driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
+            //System.Threading.Thread.Sleep(time);
+            //driver1.FindElement(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)")).Click(); ;
+
+            ////lay new phone
+            IWebElement body = driver1.FindElement(By.TagName("body"));
+            //WriteLineEmptyFile(body.Text, "temp.txt");
+            //string phone= ReadFileAtLine(File.ReadLines("temp.txt").Count()-1, "temp.txt").Split(' ')[1];
+
+            string phone = "639124442918";
+            //lay code
+            var code = "";
+            while (code=="")
+            {
+                System.Threading.Thread.Sleep(time);
+                body = driver1.FindElement(By.TagName("body"));
+                WriteLineEmptyFile(body.Text, "temp.txt");
+                var bodytext = File.ReadLines("temp.txt");
+                foreach (var bodyline in bodytext)
+                {
+                    if (bodyline.Contains(phone))
+                    {
+                        code = bodyline.Split(' ')[5];
+                    }
+                } 
+            }
             Console.WriteLine("a");
 
 
@@ -68,6 +93,12 @@ namespace taoGmailHa
             //driver.FindElement(By.XPath("/html/body/div[1]/div[2]/form/div[2]/input")).Click();
 
             //WriteLinePostingLog(mail + "@gmail.com\t" + pass);
+        }
+
+        private static string ReadFileAtLine(int p, string file)
+        {
+            return  File.ReadLines(file).Skip(p - 1).First();
+
         }
 
         private static void LoginGmail(IWebDriver driver, WebDriverWait wait)
