@@ -33,7 +33,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EAGetMail45, Version=4.6.5.1, Culture=neutral, PublicKeyToken=e10a0812eb29cf94, processorArchitecture=MSIL">
-      <HintPath>..\packages\EAGetMail.4.6.5.1\lib\net45\EAGetMail45.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\EAGetMail\EAGetMail45.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

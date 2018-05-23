@@ -18,49 +18,28 @@ namespace taoGmailHa
             int time = 5000;
             FirefoxProfileManager profileManager = new FirefoxProfileManager();
             FirefoxProfile profile = profileManager.GetProfile("default");
-            //IWebDriver driver = new FirefoxDriver();
-            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
-            //createGmailaccount(driver);
+            IWebDriver driver1 = new FirefoxDriver(profile);
+            IWebDriver driver = new FirefoxDriver();
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
+
+            //lay code
+            var code = "";
+            createGmailaccount(driver,driver1,out code);
 
             //LoginGmail(driver, wait);
 
-            //sendConfirmation(driver);
-            //string code = verifyConfirmation();
-            //addMailAfterConfirmation(driver, code);
-
-            IWebDriver driver1 = new FirefoxDriver(profile);
-            driver1.Navigate().GoToUrl("http://sms-activate.ru/index.php?act=getNumber");
+            sendConfirmation(driver);
+             code = verifyConfirmation();
+            addMailAfterConfirmation(driver, code);
 
 
-            //driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
-            //System.Threading.Thread.Sleep(time);
-            //driver1.FindElement(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)")).Click(); ;
+          
 
-            ////lay new phone
-            IWebElement body = driver1.FindElement(By.TagName("body"));
-            //WriteLineEmptyFile(body.Text, "temp.txt");
-            //string phone= ReadFileAtLine(File.ReadLines("temp.txt").Count()-1, "temp.txt").Split(' ')[1];
+            
 
-            string phone = "639124442918";
-            //lay code
-            var code = "";
-            while (code=="")
-            {
-                System.Threading.Thread.Sleep(time);
-                body = driver1.FindElement(By.TagName("body"));
-                WriteLineEmptyFile(body.Text, "temp.txt");
-                var bodytext = File.ReadLines("temp.txt");
-                foreach (var bodyline in bodytext)
-                {
-                    if (bodyline.Contains(phone))
-                    {
-                        code = bodyline.Split(' ')[5];
-                    }
-                } 
-            }
             Console.WriteLine("a");
-
-
+            driver.Quit();
+            driver1.Quit();
 
             //driver.FindElement(By.Id("BirthDay")).SendKeys("12");
             //System.Threading.Thread.Sleep(time);
@@ -93,6 +72,50 @@ namespace taoGmailHa
             //driver.FindElement(By.XPath("/html/body/div[1]/div[2]/form/div[2]/input")).Click();
 
             //WriteLinePostingLog(mail + "@gmail.com\t" + pass);
+        }
+
+        private static void getVercode(int time, IWebDriver driver1, string phone, out string code)
+        {
+            code = "";
+            float temp;
+            IWebElement body;
+            //lap den khi lay duoc vercode voi phone tuong ung
+            do
+            {
+                System.Threading.Thread.Sleep(time);
+                body = driver1.FindElement(By.TagName("body"));
+                WriteLineEmptyFile(body.Text, "temp.txt");
+                var bodytext = File.ReadLines("temp.txt");
+                foreach (var bodyline in bodytext)
+                {
+                    if (bodyline.Contains(phone) && float.TryParse(bodyline.Split(' ')[5], out temp))
+                    {
+                        code = bodyline.Split(' ')[5];
+                    }
+                }
+            } while (code == "");
+            
+        }
+
+        private static void getNewphonenumber(int time, IWebDriver driver1, out string phone)
+        {
+            IWebElement body;
+            driver1.Navigate().GoToUrl("http://sms-activate.ru/index.php?act=getNumber");
+
+            //click nut get phone o muc google, youtube
+            driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
+            System.Threading.Thread.Sleep(time);
+            driver1.FindElement(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)")).Click(); ;
+            float trygetVercode;
+
+            //lap den khi xuat hien phone moi
+            do
+            {
+                System.Threading.Thread.Sleep(time);
+                body = driver1.FindElement(By.TagName("body"));
+                WriteLineEmptyFile(body.Text, "temp.txt");
+                phone = ReadFileAtLine(File.ReadLines("temp.txt").Count() , "temp.txt").Split(' ')[1];
+            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp.txt").Count() , "temp.txt").Split(' ')[5], out trygetVercode));
         }
 
         private static string ReadFileAtLine(int p, string file)
@@ -132,7 +155,7 @@ namespace taoGmailHa
             }
         }
 
-        private static void createGmailaccount(IWebDriver driver)
+        private static void createGmailaccount(IWebDriver driver, IWebDriver driver1,out string verCode)
         {
             int time;
             string mail, pass;
@@ -176,15 +199,21 @@ namespace taoGmailHa
 
 
             string phone = "+639102714968";
+            getNewphonenumber(time, driver1, out phone);
+
             System.Threading.Thread.Sleep(time);
-            driver.FindElement(By.Id("phoneNumberId")).SendKeys(phone);
+            driver.FindElement(By.Id("phoneNumberId")).SendKeys("+"+phone);
             driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Enter);
 
-            string verCode = "929193";
+             verCode = "929193";
+            getVercode(time, driver1, phone, out verCode);
+
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("code")).SendKeys(verCode);
             driver.FindElement(By.Id("code")).SendKeys(Keys.Enter);
             System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("phoneNumberId")).Clear();
+            driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Tab+ "getcryptotab.com@gmail.com");
 
             //driver.FindElement(By.Id("month")).Click();
             //System.Threading.Thread.Sleep(time);
@@ -201,10 +230,12 @@ namespace taoGmailHa
             //keo xuong policy va bam agree
             IWebElement body = driver.FindElement(By.TagName("body"));
             body.SendKeys(Keys.Tab+Keys.End);
-            body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab );
-            body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
+            System.Threading.Thread.Sleep(time);
+            //body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab );
+            //System.Threading.Thread.Sleep(time);
+            body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
             //driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Enter);
-            System.Threading.Thread.Sleep(time*4);
+            System.Threading.Thread.Sleep(time*6);
 
             //agree policy
             //driver.FindElement(By.XPath("/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div/div/div[2]/div/div[1]/div/div[2]")).Click();
