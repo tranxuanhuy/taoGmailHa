@@ -1,4 +1,7 @@
 ﻿using EAGetMail;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.IO;
 using System.Linq;
@@ -30,11 +33,361 @@ namespace taoGmailHa
             return stt;
         }
 
-       
+        internal void Thread1()
+        {
+            Thread thr = Thread.CurrentThread;
+            string threadPerTotalthread = thr.Name;
 
-        
+
+            Demo w = new Demo();
+            for (int i = 0; i < 1; i++)
+            {
+
+                try
+                {
+                    string emailCreated=IndividualThread(threadPerTotalthread);
+
+                    
+                        w.WriteToFileThreadSafe(emailCreated, "adsLog1.txt");
+                    
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("{0} Second exception caught.", e);
+                }
+            }
+        }
+
+        public static string IndividualThread(string threadPerTotalthread)
+        {
+            int time = 5000;
+            FirefoxProfileManager profileManager = new FirefoxProfileManager();
+            FirefoxProfile profile = profileManager.GetProfile("default");
+            IWebDriver driver1 = new FirefoxDriver(profile);
+            IWebDriver driver = new FirefoxDriver();
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
+
+            //lay code
+            var code = "";
+            string email=createGmailaccount(driver, driver1, out code, threadPerTotalthread);
+
+            //LoginGmail(driver, wait);
+
+            sendConfirmation(driver);
+            code = verifyConfirmation(threadPerTotalthread);
+            addMailAfterConfirmation(driver, code);
+
+            Console.WriteLine("a");
+            driver.Quit();
+            driver1.Quit();
+            return email;
+        }
+
+        private static string createGmailaccount(IWebDriver driver, IWebDriver driver1, out string verCode,string threadPerTotalthread)
+        {
+            int time;
+            string mail, pass;
+
+            WebDriverWait wait;
+            //ChromeOptions options = new ChromeOptions();
+            //options.AddArgument("--disable-popup-blocking");
+            //options.AddArguments("--disable-notifications");
+
+            //var userAgent = ReadRandomLineOfFile("useragentswitcher.txt");
+            //options.AddArgument("--user-agent="+ userAgent);
+            //IWebDriver driver = new ChromeDriver(@"C:\", options); //<-Add your path
+
+            time = 5000;
+            mail = ReadRandomLineOfFile("usaname.txt");
+            System.Threading.Thread.Sleep(1000);
+            mail += ReadRandomLineOfFile("usaname.txt") + Path.GetRandomFileName().Replace(".", "");
+            pass = "B1nbin!@#";
+            FirefoxProfileManager profileManager = new FirefoxProfileManager();
+            //FirefoxProfile profile = profileManager.GetProfile(File.ReadAllLines("config.txt")[3].Split('=')[1]);
+            //FirefoxProfile profile = profileManager.GetProfile("posting");
+
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            //string pvas = File.ReadLines("pvas.txt").First();
 
 
+
+            driver.Navigate().GoToUrl("https://accounts.google.com/signUp?service=mail");
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("firstName")).SendKeys(ReadRandomLineOfFile("usaname.txt"));
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("lastName")).SendKeys(ReadRandomLineOfFile("usaname.txt"));
+            //System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("username")).SendKeys(mail);
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Name("Passwd")).SendKeys(pass);
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Name("ConfirmPasswd")).SendKeys(pass);
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Name("ConfirmPasswd")).SendKeys(Keys.Enter);
+
+
+            string phone = "+639102714968";
+            getNewphonenumber(time, driver1, out phone, threadPerTotalthread);
+
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("phoneNumberId")).SendKeys("+" + phone);
+            driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Enter);
+
+            verCode = "929193";
+            getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
+
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("code")).SendKeys(verCode);
+            driver.FindElement(By.Id("code")).SendKeys(Keys.Enter);
+            System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("phoneNumberId")).Clear();
+            driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Tab + "getcryptotab.com@gmail.com");
+
+            //driver.FindElement(By.Id("month")).Click();
+            //System.Threading.Thread.Sleep(time);
+            driver.FindElement(By.Id("month")).SendKeys("j");
+            driver.FindElement(By.Id("day")).SendKeys("10");
+            driver.FindElement(By.Id("year")).SendKeys("1990");
+            driver.FindElement(By.Id("gender")).SendKeys("f");
+            System.Threading.Thread.Sleep(time);
+            //driver.FindElement(By.Id("gender")).SendKeys(Keys.Down);
+            driver.FindElement(By.Id("year")).SendKeys(Keys.Enter);
+            System.Threading.Thread.Sleep(time);
+
+
+            //keo xuong policy va bam agree
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            body.SendKeys(Keys.Tab + Keys.End);
+            System.Threading.Thread.Sleep(time);
+            //body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab );
+            //System.Threading.Thread.Sleep(time);
+            body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
+            //driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Enter);
+            System.Threading.Thread.Sleep(time * 6);
+
+            //agree policy
+            //driver.FindElement(By.XPath("/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div/div/div[2]/div/div[1]/div/div[2]")).Click();
+            //System.Threading.Thread.Sleep(time);
+
+            ////To continue, first verify it's you
+            //driver.FindElement(By.Name("password")).SendKeys(pass);
+            //driver.FindElement(By.Name("password")).SendKeys(Keys.Enter);
+            WriteLineEmptyFile(mail,"pvas"+ threadPerTotalthread.Split(':')[0]);
+            //WriteLinePostingLog(mail);
+            return mail;
+        }
+
+        private static void getVercode(int time, IWebDriver driver1, string phone, out string code,string threadPerTotalthread)
+        {
+            code = "";
+            float temp;
+            IWebElement body;
+            //lap den khi lay duoc vercode voi phone tuong ung
+            do
+            {
+                System.Threading.Thread.Sleep(time);
+                body = driver1.FindElement(By.TagName("body"));
+                WriteLineEmptyFile(body.Text, "temp"+ threadPerTotalthread.Split(':')[0]);
+                var bodytext = File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]);
+                foreach (var bodyline in bodytext)
+                {
+                    //neu hang tren web dung voi so phone do, va da lay duoc so (het status loading)
+                    if (bodyline.Contains(phone) && float.TryParse(bodyline.Split(' ')[5], out temp))
+                    {
+                        code = bodyline.Split(' ')[5];
+                    }
+                }
+            } while (code == "");
+
+        }
+
+        private static void getNewphonenumber(int time, IWebDriver driver1, out string phone,string threadPerTotalthread)
+        {
+            IWebElement body;
+            driver1.Navigate().GoToUrl("http://sms-activate.ru/index.php?act=getNumber");
+
+            //click nut get phone o muc google, youtube
+            driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
+            System.Threading.Thread.Sleep(time);
+            driver1.FindElement(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)")).Click(); ;
+            float trygetVercode;
+
+            //lap den khi xuat hien phone moi
+            do
+            {
+                System.Threading.Thread.Sleep(time);
+                body = driver1.FindElement(By.TagName("body"));
+                WriteLineEmptyFile(body.Text, "temp"+ threadPerTotalthread.Split(':')[0]);
+                phone = ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[0]), "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[1];
+
+                //lap neu neu N hang cuoi cung van chua la chua co sdt moi (phai lay duoc N so loading thi moi chay multithread duoc, ko se bi chong cheo sdt)
+                //cac so loading o cuoi cung, do do kiem tra so co index la lastline-(N-1) la duoc, cac so tiep theo auto la so loading
+            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[1])+1, "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[5], out trygetVercode));
+        }
+
+        private static string ReadFileAtLine(int p, string file)
+        {
+            return File.ReadLines(file).Skip(p - 1).First();
+
+        }
+
+        private static void LoginGmail(IWebDriver driver, WebDriverWait wait)
+        {
+            string pvas = File.ReadLines("pvas.txt").First();
+            try
+            {
+                //vao email lay link confirmation
+                driver.Navigate().GoToUrl("https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/mail/#identifier");
+                //driver.FindElement(By.Id("Email")).SendKeys(pvas.Split('\t').Last());
+                driver.FindElement(By.Id("identifierId")).SendKeys(pvas);
+                driver.FindElement(By.Id("identifierId")).SendKeys(Keys.Enter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("{0} Second exception caught.", e);
+            }
+            try
+            {
+                wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.Name("password")));
+
+
+                {
+                    driver.FindElement(By.Name("password")).SendKeys("B1nbin!@#");
+                }
+                driver.FindElement(By.Name("password")).SendKeys(Keys.Enter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("{0} Second exception caught.", e);
+            }
+        }
+
+
+
+        public static void WriteLinePostingLog(string content = "", string filewrite = "adsLog.txt")
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filewrite, true))
+            {
+
+                file.WriteLine(content);
+
+            }
+        }
+
+        public static void WriteLineEmptyFile(string content = "", string filewrite = "pvas.txt")
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filewrite, false))
+            {
+
+                file.WriteLine(content.ToLower());
+
+            }
+        }
+
+        public static string ReadRandomLineOfFile(string file)
+        {
+            string[] lines = File.ReadAllLines(file); //i hope that the file is not too big
+            Random rand = new Random();
+            return lines[rand.Next(lines.Length)];
+        }
+
+        private static void addMailAfterConfirmation(IWebDriver driver, string code)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
+            System.Threading.Thread.Sleep(5000);
+            driver.Navigate().GoToUrl("https://accounts.google.com/ServiceLogin?service=mail&continue=https://mail.google.com/mail/#identifier");
+            try
+            {
+                driver.Navigate().GoToUrl("https://mail.google.com/mail/?ui=html&zy=h");
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("{0} Second exception caught.", e);
+            }
+            System.Threading.Thread.Sleep(5000);
+            driver.FindElement(By.LinkText("Settings")).Click();
+            driver.FindElement(By.LinkText("Forwarding and POP/IMAP")).Click();
+            //nhap code confirm
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.Name("fwvc")));
+            driver.FindElement(By.Name("fwvc")).SendKeys(code);
+            driver.FindElement(By.Name("fwvc")).Submit();
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath("/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/form[1]/span[2]/input[1]")));
+            driver.FindElement(By.XPath("/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/form[1]/span[2]/input[1]")).Click();
+            driver.FindElement(By.XPath("/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/form[1]/input[2]")).Click();
+
+        }
+
+        private static string verifyConfirmation(string threadPerTotalthread)
+        {
+            string code = "";
+            while (code == "")
+            {
+                MyThread10.getMailGoogle(int.Parse(threadPerTotalthread.Split(':')[0]), int.Parse(threadPerTotalthread.Split(':')[1]), 2);
+                //load link confirm len ff
+                var alinks = File.ReadAllLines("socks.txt");
+                try
+                {
+                    alinks = File.ReadAllLines("mailConfirm"+ threadPerTotalthread.Split(':')[0]+".txt");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("{0} Second exception caught.", e);
+                }
+                foreach (string link in alinks)
+                    if (File.ReadLines("pvas"+ threadPerTotalthread.Split(':')[0]).First().Contains(link.Split('\t')[0]))
+                    {
+                        code = link.Split('\t')[1];
+                        break;
+                    }
+            }
+            return code;
+        }
+
+        private static void sendConfirmation(IWebDriver driver)
+        {
+            System.Threading.Thread.Sleep(5000);
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
+            driver.Navigate().GoToUrl("https://mail.google.com/mail/?ui=html&zy=h");
+            try
+            {
+                driver.FindElement(By.ClassName("maia-button")).Submit();
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("{0} Second exception caught.", e);
+            }
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.LinkText("Settings")));
+            driver.FindElement(By.LinkText("Settings")).Click();
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.LinkText("Forwarding and POP/IMAP")));
+            driver.FindElement(By.LinkText("Forwarding and POP/IMAP")).Click();
+            string code = "";
+            var elements = driver.PageSource.Split('/');
+            foreach (string element in elements)
+            {
+                if (element.Length == 13)
+                {
+                    code = element;
+                    break;
+                }
+            }
+            driver.Navigate().GoToUrl("https://mail.google.com/mail/u/0/h/" + code + "/?v=prufw");
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath("/html/body/div[2]/form/input[1]")));
+            driver.FindElement(By.XPath("/html/body/div[2]/form/input[1]")).SendKeys("getcryptotab.com@gmail.com");
+            driver.FindElement(By.XPath("/html/body/div[2]/form/input[1]")).Submit();
+            if (driver.FindElement(By.TagName("body")).Text.Contains("You already have the forwarding address"))
+                return;
+            try
+            {
+                wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.Name("nvp_bu_pfwd")));
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("{0} Second exception caught.", e);
+                return;
+            }
+            driver.FindElement(By.Name("nvp_bu_pfwd")).Submit();
+        }
 
         public static void getMailOutlook(int stt, int num, int reset)
         {
