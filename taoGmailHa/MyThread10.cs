@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -137,7 +138,8 @@ namespace taoGmailHa
 
 
             string phone = "+639102714968";
-            getNewphonenumber(time, driver1, out phone, threadPerTotalthread);
+            string idphone = "+639102714968";
+            getNewphonenumber(time, driver1, out phone,out idphone, threadPerTotalthread);
 
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("phoneNumberId")).SendKeys("+" + phone);
@@ -146,6 +148,17 @@ namespace taoGmailHa
             verCode = "929193";
             getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
 
+            //neu sdt loading mai ca 4p ko co code
+            if (verCode=="none")
+            {
+                driver.Quit();
+
+                //xoa sdt trong trang sms.ru, bam nut do de xoa so
+                driver1.FindElement(By.Id("fail_" + idphone)).Click() ;
+                
+                driver1.Quit();
+                return null;
+            }
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("code")).SendKeys(verCode);
             driver.FindElement(By.Id("code")).SendKeys(Keys.Enter);
@@ -192,6 +205,8 @@ namespace taoGmailHa
             code = "";
             float temp;
             IWebElement body;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             //lap den khi lay duoc vercode voi phone tuong ung
             do
             {
@@ -207,11 +222,21 @@ namespace taoGmailHa
                         code = bodyline.Split(' ')[5];
                     }
                 }
+
+                //neu ko lay duoc code, loading mai sau 4p
+                    if (stopwatch.Elapsed > TimeSpan.FromMinutes(4))
+                {
+                    code = "none";
+                    break;
+                }
+                    
+                    
+                
             } while (code == "");
 
         }
 
-        private static void getNewphonenumber(int time, IWebDriver driver1, out string phone,string threadPerTotalthread)
+        private static void getNewphonenumber(int time, IWebDriver driver1, out string phone,out string idphone,string threadPerTotalthread)
         {
             IWebElement body;
             driver1.Navigate().GoToUrl("http://sms-activate.ru/index.php?act=getNumber");
@@ -229,6 +254,7 @@ namespace taoGmailHa
                 body = driver1.FindElement(By.TagName("body"));
                 WriteLineEmptyFile(body.Text, "temp"+ threadPerTotalthread.Split(':')[0]);
                 phone = ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[0]), "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[1];
+                idphone = ReadFileAtLine(File.ReadLines("temp" + threadPerTotalthread.Split(':')[0]).Count() - int.Parse(threadPerTotalthread.Split(':')[0]), "temp" + threadPerTotalthread.Split(':')[0]).Split(' ')[0];
 
                 //lap neu neu N hang cuoi cung van chua la chua co sdt moi (phai lay duoc N so loading thi moi chay multithread duoc, ko se bi chong cheo sdt)
                 //cac so loading o cuoi cung, do do kiem tra so co index la lastline-(N-1) la duoc, cac so tiep theo auto la so loading
@@ -361,6 +387,7 @@ namespace taoGmailHa
             System.Threading.Thread.Sleep(5000);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
             driver.Navigate().GoToUrl("https://mail.google.com/mail/?ui=html&zy=h");
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.ClassName("maia-button")));
             try
             {
                 driver.FindElement(By.ClassName("maia-button")).Submit();
