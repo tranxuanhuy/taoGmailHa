@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\adsLog1.txt" />
+    <Content Include="bin\Debug\useragentswitcher.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -16,21 +16,24 @@ namespace taoGmailHa
     {
         static void Main(string[] args)
         {
-            MyThread10[] thr = new MyThread10[100];
-            Thread[] tid = new Thread[100];
-            int numberThread = 2;
-            for (int i = 0; i < numberThread; i++)
+            for (int j = 0; j < 6; j++)
             {
-                thr[i] = new MyThread10();
-                tid[i] = new Thread(new ThreadStart(thr[i].Thread1));
-                tid[i].Name = i+":"+numberThread;
-                tid[i].Start();
-            }
+                MyThread10[] thr = new MyThread10[100];
+                Thread[] tid = new Thread[100];
+                int numberThread = 3;
+                for (int i = 0; i < numberThread; i++)
+                {
+                    thr[i] = new MyThread10();
+                    tid[i] = new Thread(new ThreadStart(thr[i].Thread1));
+                    tid[i].Name = i + ":" + numberThread;
+                    tid[i].Start();
+                }
 
-            //for (int i = 0; i < 2; i++)
-            //{
-            //    tid[i].Join(); 
-            //}
+                for (int i = 0; i < numberThread; i++)
+                {
+                    tid[i].Join();
+                } 
+            }
         }
             
 

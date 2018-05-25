@@ -64,8 +64,11 @@ namespace taoGmailHa
             int time = 5000;
             FirefoxProfileManager profileManager = new FirefoxProfileManager();
             FirefoxProfile profile = profileManager.GetProfile("default");
+            ChangeUAFirefox(profile);
+
             IWebDriver driver1 = new FirefoxDriver(profile);
-            IWebDriver driver = new FirefoxDriver();
+
+            IWebDriver driver = new FirefoxDriver(profile);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
 
             //lay code
@@ -82,6 +85,12 @@ namespace taoGmailHa
             driver.Quit();
             driver1.Quit();
             return email;
+        }
+
+        public static void ChangeUAFirefox(FirefoxProfile profile)
+        {
+            var userAgent = ReadRandomLineOfFile("useragentswitcher.txt");
+            profile.SetPreference("general.useragent.override", userAgent);
         }
 
         private static string createGmailaccount(IWebDriver driver, IWebDriver driver1, out string verCode,string threadPerTotalthread)
@@ -223,7 +232,7 @@ namespace taoGmailHa
 
                 //lap neu neu N hang cuoi cung van chua la chua co sdt moi (phai lay duoc N so loading thi moi chay multithread duoc, ko se bi chong cheo sdt)
                 //cac so loading o cuoi cung, do do kiem tra so co index la lastline-(N-1) la duoc, cac so tiep theo auto la so loading
-            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[1])+1, "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[5], out trygetVercode));
+            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[1])+1, "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[5], out trygetVercode)&& float.TryParse(phone,out trygetVercode));
         }
 
         private static string ReadFileAtLine(int p, string file)
@@ -335,10 +344,13 @@ namespace taoGmailHa
                     Console.WriteLine("{0} Second exception caught.", e);
                 }
                 foreach (string link in alinks)
-                    if (File.ReadLines("pvas"+ threadPerTotalthread.Split(':')[0]).First().Contains(link.Split('\t')[0]))
+                    if (link.Contains("\t"))
                     {
-                        code = link.Split('\t')[1];
-                        break;
+                        if (File.ReadLines("pvas" + threadPerTotalthread.Split(':')[0]).First().Contains(link.Split('\t')[0]))
+                        {
+                            code = link.Split('\t')[1];
+                            break;
+                        } 
                     }
             }
             return code;
