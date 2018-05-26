@@ -227,7 +227,7 @@ namespace taoGmailHa
                     if (stopwatch.Elapsed > TimeSpan.FromMinutes(4))
                 {
                     code = "none";
-                    break;
+                    return ;
                 }
                     
                     
