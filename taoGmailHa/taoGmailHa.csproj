@@ -60,10 +60,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="bin\Debug\FF.au3" />
+    <None Include="bin\Debug\FFEx.au3" />
+    <None Include="bin\Debug\paramForcallingCSharp" />
+    <None Include="bin\Debug\phonenumber" />
+    <None Include="bin\Debug\taoGmail.au3" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\adsLog1.txt" />
+    <Content Include="bin\Debug\geckodriver.exe" />
     <Content Include="bin\Debug\useragentswitcher.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

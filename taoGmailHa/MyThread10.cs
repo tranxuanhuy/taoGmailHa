@@ -48,8 +48,11 @@ namespace taoGmailHa
                 {
                     string emailCreated=IndividualThread(threadPerTotalthread);
 
-                    
-                        w.WriteToFileThreadSafe(emailCreated, "adsLog1.txt");
+
+                    if (emailCreated!=null)
+                    {
+                        w.WriteToFileThreadSafe(emailCreated, "adsLog1.txt"); 
+                    }
                     
                 }
                 catch (Exception e)
@@ -63,29 +66,59 @@ namespace taoGmailHa
         public static string IndividualThread(string threadPerTotalthread)
         {
             int time = 5000;
-            FirefoxProfileManager profileManager = new FirefoxProfileManager();
-            FirefoxProfile profile = profileManager.GetProfile("default");
-            ChangeUAFirefox(profile);
+            string sw=ReadFileAtLine(1, "paramForcallingCSharp");
+ 
 
-            IWebDriver driver1 = new FirefoxDriver(profile);
 
-            IWebDriver driver = new FirefoxDriver(profile);
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
+            if (sw=="2")
+            {
+                //lay code
+                var code = "";
+                string email = ReadFileAtLine(1, "pvas" + threadPerTotalthread.Split(':')[0]);
 
-            //lay code
-            var code = "";
-            string email=createGmailaccount(driver, driver1, out code, threadPerTotalthread);
+                //LoginGmail(driver, wait);
 
-            //LoginGmail(driver, wait);
 
-            sendConfirmation(driver);
-            code = verifyConfirmation(threadPerTotalthread);
-            addMailAfterConfirmation(driver, code);
+                code = verifyConfirmation(threadPerTotalthread);
+                WriteLineEmptyFile(code, "codeforward");
 
-            Console.WriteLine("a");
-            driver.Quit();
-            driver1.Quit();
-            return email;
+                Console.WriteLine("a");
+
+                //driver1.Quit();
+                return email; 
+            }
+            else if(sw=="1")
+            {
+                FirefoxProfileManager profileManager = new FirefoxProfileManager();
+                FirefoxProfile profile = profileManager.GetProfile("Default User");
+
+
+                IWebDriver driver1 = new FirefoxDriver(profile);
+
+                //lay phone
+                string phone, idphone;
+                getNewphonenumber(time, driver1, out phone, out idphone, threadPerTotalthread);
+                WriteLineEmptyFile(phone, "phonenumber");
+
+                //cho autoit dien phone vao form va tiep tuc lay code
+                string cont= "1";
+
+                while (cont=="1")
+                {
+                    System.Threading.Thread.Sleep(time);
+                    cont = ReadFileAtLine(1, "paramForcallingCSharp");
+                }
+
+                //lay code
+                string verCode = "";
+                getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
+                WriteLineEmptyFile(verCode, "phonenumber");
+                return null;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public static void ChangeUAFirefox(FirefoxProfile profile)
@@ -250,7 +283,7 @@ namespace taoGmailHa
             //lap den khi xuat hien phone moi
             do
             {
-                System.Threading.Thread.Sleep(time);
+                System.Threading.Thread.Sleep(time*2);
                 body = driver1.FindElement(By.TagName("body"));
                 WriteLineEmptyFile(body.Text, "temp"+ threadPerTotalthread.Split(':')[0]);
                 phone = ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[0]), "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[1];
@@ -258,7 +291,7 @@ namespace taoGmailHa
 
                 //lap neu neu N hang cuoi cung van chua la chua co sdt moi (phai lay duoc N so loading thi moi chay multithread duoc, ko se bi chong cheo sdt)
                 //cac so loading o cuoi cung, do do kiem tra so co index la lastline-(N-1) la duoc, cac so tiep theo auto la so loading
-            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[1])+1, "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[5], out trygetVercode)&& float.TryParse(phone,out trygetVercode));
+            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[1])+1, "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[5], out trygetVercode)&& float.TryParse(phone,out trygetVercode)&& File.ReadAllText("temp" + threadPerTotalthread.Split(':')[0]).Contains("нажмите зеленую кнопку"));
         }
 
         private static string ReadFileAtLine(int p, string file)
@@ -358,7 +391,7 @@ namespace taoGmailHa
             string code = "";
             while (code == "")
             {
-                MyThread10.getMailGoogle(int.Parse(threadPerTotalthread.Split(':')[0]), int.Parse(threadPerTotalthread.Split(':')[1]), 2);
+                MyThread10.getMailGoogle(int.Parse(threadPerTotalthread.Split(':')[0]), int.Parse(threadPerTotalthread.Split(':')[1])+2, 2);
                 //load link confirm len ff
                 var alinks = File.ReadAllLines("socks.txt");
                 try
@@ -372,7 +405,7 @@ namespace taoGmailHa
                 foreach (string link in alinks)
                     if (link.Contains("\t"))
                     {
-                        if (File.ReadLines("pvas" + threadPerTotalthread.Split(':')[0]).First().Contains(link.Split('\t')[0]))
+                        if (File.ReadLines("pvas" + threadPerTotalthread.Split(':')[0]).First().ToLower().Contains(link.Split('\t')[0]))
                         {
                             code = link.Split('\t')[1];
                             break;
