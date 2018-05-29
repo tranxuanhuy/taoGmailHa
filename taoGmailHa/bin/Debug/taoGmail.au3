@@ -18,15 +18,16 @@ Func taoGmail()
   Local $oFF= _FFConnect()
 Local $iCountLines = _FileCountLines("usaname.txt") ; Retrieve the number of lines in the current script.
 
+_FFPrefSet("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0")
 
-   _FFOpenURL("https://accounts.google.com/signUp?service=mail")
+_FFOpenURL("https://accounts.google.com/signUp?service=mail")
    WinActivate("Create your Google Account - Mozilla Firefox")
 _FFSetValueById("firstName", ReadFileAtLine("usaname.txt",Random(1, $iCountLines, 1)))
 _FFSetValueById("lastName", ReadFileAtLine("usaname.txt",Random(1, $iCountLines, 1)))
 $username=ReadFileAtLine("usaname.txt",Random(1, $iCountLines, 1))&ReadFileAtLine("usaname.txt",Random(1, $iCountLines, 1))&Randomstring()
 _FFSetValueById("username", $username)
-_FFSetValueByName("Passwd", "B1nbin!@#")
-_FFSetValueByName("ConfirmPasswd", "B1nbin!@#")
+_FFSetValueByName("Passwd", "B1nbin!@#1")
+_FFSetValueByName("ConfirmPasswd", "B1nbin!@#1")
 Send("{tab}{tab}{enter}")
 WriteEmptyFile("pvas0",$username)
 
@@ -54,6 +55,7 @@ WEnd
 
 ;nhap code
 Sleep($time)
+WinActivate("Create your Google Account - Mozilla Firefox")
 _FFSetValueById("code", ReadFileAtLine("phonenumber",1))
 Send("{enter}")
 
@@ -79,7 +81,7 @@ _FFLinkClick("Forwarding and POP/IMAP","text")
 _FFClick("addbutton","id")
 Sleep($time)
 Send("{tab}getcryptotab.com{ASC 064}gmail.com{enter}")
-Sleep($time)
+Sleep($time*2)
 Send("{tab 2}{enter}")
 
 ;lay code forward
@@ -109,6 +111,7 @@ Sleep($time)
 Send("{tab 35}{down}{tab 3}{enter}")
 
 ;clear ff
+Send("^a")
 Sleep($time/2)
 Send("{CTRLDOWN}{SHIFTDOWN}{del}{SHIFTup}{CTRLup}")
 Sleep($time/2)

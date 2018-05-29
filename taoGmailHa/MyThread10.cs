@@ -113,6 +113,7 @@ namespace taoGmailHa
                 string verCode = "";
                 getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
                 WriteLineEmptyFile(verCode, "phonenumber");
+                driver1.Quit();
                 return null;
             }
             else
@@ -274,15 +275,16 @@ namespace taoGmailHa
             IWebElement body;
             driver1.Navigate().GoToUrl("http://sms-activate.ru/index.php?act=getNumber");
 
-            //click nut get phone o muc google, youtube
-            driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
-            System.Threading.Thread.Sleep(time);
-            driver1.FindElement(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)")).Click(); ;
-            float trygetVercode;
+             float trygetVercode;
 
             //lap den khi xuat hien phone moi
             do
             {
+                //click nut get phone o muc google, youtube
+                driver1.FindElement(By.XPath("/html/body/div[4]/div/div[4]/div[2]/div[1]/form/table/tbody/tr[7]/td[2]/label/span[1]")).Click();
+                System.Threading.Thread.Sleep(time);
+                driver1.FindElement(By.CssSelector("tr.tabbed:nth-child(7) > td:nth-child(2) > label:nth-child(1) > a:nth-child(5)")).Click(); ;
+
                 System.Threading.Thread.Sleep(time*2);
                 body = driver1.FindElement(By.TagName("body"));
                 WriteLineEmptyFile(body.Text, "temp"+ threadPerTotalthread.Split(':')[0]);
@@ -291,7 +293,7 @@ namespace taoGmailHa
 
                 //lap neu neu N hang cuoi cung van chua la chua co sdt moi (phai lay duoc N so loading thi moi chay multithread duoc, ko se bi chong cheo sdt)
                 //cac so loading o cuoi cung, do do kiem tra so co index la lastline-(N-1) la duoc, cac so tiep theo auto la so loading
-            } while (float.TryParse(ReadFileAtLine(File.ReadLines("temp"+ threadPerTotalthread.Split(':')[0]).Count()- int.Parse(threadPerTotalthread.Split(':')[1])+1, "temp"+ threadPerTotalthread.Split(':')[0]).Split(' ')[5], out trygetVercode)&& float.TryParse(phone,out trygetVercode)&& File.ReadAllText("temp" + threadPerTotalthread.Split(':')[0]).Contains("нажмите зеленую кнопку"));
+            } while (!File.ReadAllText("temp" + threadPerTotalthread.Split(':')[0]).Contains("нажмите зеленую кнопку"));
         }
 
         private static string ReadFileAtLine(int p, string file)
