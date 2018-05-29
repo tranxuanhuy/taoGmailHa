@@ -32,7 +32,7 @@ Send("{tab}{tab}{enter}")
 WriteEmptyFile("pvas0",$username)
 
 ;lay so phone
-WriteEmptyFile("paramForcallingCSharp","1") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail
+WriteEmptyFile("paramForcallingCSharp","3") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail,neu la 3 thi goi lay phone number sms.ru API
 FileDelete("phonenumber")
 Run("taoGmailHa.exe", "")
 ;cho den khi co phone
@@ -75,6 +75,7 @@ Sleep($time)
 Send("{tab 3}{enter}")
 Sleep($time)
 _FFOpenURL("https://mail.google.com/mail/?ui=html&zy=h")
+Sleep($time)
 _FFLinkClick("Settings","text")
 Sleep($time)
 _FFLinkClick("Forwarding and POP/IMAP","text")

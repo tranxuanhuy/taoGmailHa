@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace taoGmailHa
@@ -69,7 +70,7 @@ namespace taoGmailHa
             string sw=ReadFileAtLine(1, "paramForcallingCSharp");
  
 
-
+            //lay code forward mail
             if (sw=="2")
             {
                 //lay code
@@ -87,6 +88,7 @@ namespace taoGmailHa
                 //driver1.Quit();
                 return email; 
             }
+            //lay phone va code qua web firefox
             else if(sw=="1")
             {
                 FirefoxProfileManager profileManager = new FirefoxProfileManager();
@@ -116,10 +118,108 @@ namespace taoGmailHa
                 driver1.Quit();
                 return null;
             }
+            //lay phone va code qua web API
+            else if (sw == "3")
+            {
+                  //lay phone
+                string phone, idphone;
+                getNewphonenumberAPI(time, out phone, out idphone, threadPerTotalthread);
+                WriteLineEmptyFile(phone, "phonenumber");
+
+                //cho autoit dien phone vao form va tiep tuc lay code
+                string cont = "1";
+
+                while (cont == "1")
+                {
+                    System.Threading.Thread.Sleep(time);
+                    cont = ReadFileAtLine(1, "paramForcallingCSharp");
+                }
+
+                //lay code
+                string verCode = "";
+                getVercodeAPI(time, idphone, out verCode, threadPerTotalthread);
+                WriteLineEmptyFile(verCode, "phonenumber");
+                
+                return null;
+            }
             else
             {
                 return null;
             }
+        }
+
+        private static void getVercodeAPI(int time, string idphone, out string verCode, string threadPerTotalthread)
+        {
+            verCode = "";
+            string responseFromServer = "STATUS_WAIT_CODE";
+            while (!responseFromServer.Contains("STATUS_OK"))
+            {
+                try
+                {
+                    // Create a request for the URL. 
+                    WebRequest request = WebRequest.Create("http://sms-activate.ru/stubs/handler_api.php?api_key=bA1A1324473d1Ac7447e520A92A27bf2&action=getStatus&id="+ idphone);
+
+                    // If required by the server, set the credentials.
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    // Get the response.
+                    WebResponse response = request.GetResponse();
+                    // Display the status.
+                    Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+                    // Get the stream containing content returned by the server.
+                    Stream dataStream = response.GetResponseStream();
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader = new StreamReader(dataStream);
+                    // Read the content.
+                    responseFromServer = reader.ReadToEnd();
+                    // Display the content.
+                    //Console.WriteLine(responseFromServer);
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("{0} Second exception caught.", e);
+                }
+            }
+            verCode = responseFromServer.Split(':')[1];
+
+        }
+
+        private static void getNewphonenumberAPI(int time, out string phone, out string idphone, string threadPerTotalthread)
+        {
+            phone = ""; idphone = "";
+            string responseFromServer="";
+            while (!responseFromServer.Contains("ACCESS_NUMBER"))
+            {
+                try
+                {
+                    // Create a request for the URL. 
+                    WebRequest request = WebRequest.Create("http://sms-activate.ru/stubs/handler_api.php?api_key=bA1A1324473d1Ac7447e520A92A27bf2&action=getNumber&service=go&country=11");
+
+                    // If required by the server, set the credentials.
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    // Get the response.
+                    WebResponse response = request.GetResponse();
+                    // Display the status.
+                    Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+                    // Get the stream containing content returned by the server.
+                    Stream dataStream = response.GetResponseStream();
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader = new StreamReader(dataStream);
+                    // Read the content.
+                    responseFromServer = reader.ReadToEnd();
+                    // Display the content.
+                    //Console.WriteLine(responseFromServer);
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("{0} Second exception caught.", e);
+                } 
+            }
+            phone = responseFromServer.Split(':')[2];
+            idphone = responseFromServer.Split(':')[1];
         }
 
         public static void ChangeUAFirefox(FirefoxProfile profile)
