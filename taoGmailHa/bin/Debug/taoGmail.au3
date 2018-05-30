@@ -112,7 +112,7 @@ Sleep($time)
 Send("{tab 35}{down}{tab 3}{enter}")
 
 ;clear ff
-Send("^a")
+Send("^w")
 Sleep($time/2)
 Send("{CTRLDOWN}{SHIFTDOWN}{del}{SHIFTup}{CTRLup}")
 Sleep($time/2)

@@ -194,7 +194,7 @@ namespace taoGmailHa
                 try
                 {
                     // Create a request for the URL. 
-                    WebRequest request = WebRequest.Create("http://sms-activate.ru/stubs/handler_api.php?api_key=bA1A1324473d1Ac7447e520A92A27bf2&action=getNumber&service=go&country=11");
+                    WebRequest request = WebRequest.Create("http://sms-activate.ru/stubs/handler_api.php?api_key=bA1A1324473d1Ac7447e520A92A27bf2&action=getNumber&service=go&country="+ ReadFileAtLine(1,"config").Split(':')[1]);
 
                     // If required by the server, set the credentials.
                     request.Credentials = CredentialCache.DefaultCredentials;
