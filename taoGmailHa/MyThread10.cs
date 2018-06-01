@@ -46,10 +46,10 @@ namespace taoGmailHa
 
                 try
                 {
-                    string emailCreated=IndividualThread(threadPerTotalthread);
+                    string emailCreatedandpass=IndividualThread(threadPerTotalthread);
 
                     
-                        w.WriteToFileThreadSafe(emailCreated, "adsLog1.txt");
+                        w.WriteToFileThreadSafe(emailCreatedandpass, "adsLog1.txt");
                     
                 }
                 catch (Exception e)
@@ -67,14 +67,14 @@ namespace taoGmailHa
             FirefoxProfile profile = profileManager.GetProfile("default");
             ChangeUAFirefox(profile);
 
-            IWebDriver driver1 = new FirefoxDriver(profile);
+            IWebDriver driver1 = null;
 
             IWebDriver driver = new FirefoxDriver(profile);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(40));
 
             //lay code
             var code = "";
-            string email=createGmailaccount(driver, driver1, out code, threadPerTotalthread);
+            string emailAndpass=createGmailaccount(driver, driver1, out code, threadPerTotalthread);
 
             //LoginGmail(driver, wait);
 
@@ -84,8 +84,8 @@ namespace taoGmailHa
 
             Console.WriteLine("a");
             driver.Quit();
-            driver1.Quit();
-            return email;
+            //driver1.Quit();
+            return emailAndpass;
         }
 
         public static void ChangeUAFirefox(FirefoxProfile profile)
@@ -112,7 +112,8 @@ namespace taoGmailHa
             mail = ReadRandomLineOfFile("usaname.txt");
             System.Threading.Thread.Sleep(1000);
             mail += ReadRandomLineOfFile("usaname.txt") + Path.GetRandomFileName().Replace(".", "");
-            pass = "B1nbin!@#";
+            pass = "B1nbin!@#2";
+            pass = GeneratePassword(10, 3);
             FirefoxProfileManager profileManager = new FirefoxProfileManager();
             //FirefoxProfile profile = profileManager.GetProfile(File.ReadAllLines("config.txt")[3].Split('=')[1]);
             //FirefoxProfile profile = profileManager.GetProfile("posting");
@@ -123,30 +124,32 @@ namespace taoGmailHa
 
 
             driver.Navigate().GoToUrl("https://accounts.google.com/signUp?service=mail");
-            System.Threading.Thread.Sleep(time);
+            
             driver.FindElement(By.Id("firstName")).SendKeys(ReadRandomLineOfFile("usaname.txt"));
-            System.Threading.Thread.Sleep(time);
+            
             driver.FindElement(By.Id("lastName")).SendKeys(ReadRandomLineOfFile("usaname.txt"));
-            //System.Threading.Thread.Sleep(time);
+            //
             driver.FindElement(By.Id("username")).SendKeys(mail);
-            System.Threading.Thread.Sleep(time);
+            
             driver.FindElement(By.Name("Passwd")).SendKeys(pass);
-            System.Threading.Thread.Sleep(time);
+            
             driver.FindElement(By.Name("ConfirmPasswd")).SendKeys(pass);
-            System.Threading.Thread.Sleep(time);
-            driver.FindElement(By.Name("ConfirmPasswd")).SendKeys(Keys.Enter);
+            
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            body.SendKeys( Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
 
 
-            string phone = "+639102714968";
+            string phone = "+84935939798";
             string idphone = "+639102714968";
-            getNewphonenumber(time, driver1, out phone,out idphone, threadPerTotalthread);
+            //getNewphonenumber(time, driver1, out phone,out idphone, threadPerTotalthread);
 
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("phoneNumberId")).SendKeys("+" + phone);
-            driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Enter);
+            body = driver.FindElement(By.TagName("body"));
+            body.SendKeys( Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
 
-            verCode = "929193";
-            getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
+            verCode = "370646";
+            //getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
 
             //neu sdt loading mai ca 4p ko co code
             if (verCode=="none")
@@ -161,7 +164,8 @@ namespace taoGmailHa
             }
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("code")).SendKeys(verCode);
-            driver.FindElement(By.Id("code")).SendKeys(Keys.Enter);
+            body = driver.FindElement(By.TagName("body"));
+            body.SendKeys(Keys.Tab + Keys.Tab +  Keys.Enter);
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("phoneNumberId")).Clear();
             driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Tab + "getcryptotab.com@gmail.com");
@@ -174,19 +178,20 @@ namespace taoGmailHa
             driver.FindElement(By.Id("gender")).SendKeys("f");
             System.Threading.Thread.Sleep(time);
             //driver.FindElement(By.Id("gender")).SendKeys(Keys.Down);
-            driver.FindElement(By.Id("year")).SendKeys(Keys.Enter);
+            body = driver.FindElement(By.TagName("body"));
+            body.SendKeys(Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
             System.Threading.Thread.Sleep(time);
 
 
             //keo xuong policy va bam agree
-            IWebElement body = driver.FindElement(By.TagName("body"));
+            body = driver.FindElement(By.TagName("body"));
             body.SendKeys(Keys.Tab + Keys.End);
             System.Threading.Thread.Sleep(time);
             //body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab );
             //System.Threading.Thread.Sleep(time);
             body.SendKeys(Keys.Tab + Keys.End + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
             //driver.FindElement(By.Id("phoneNumberId")).SendKeys(Keys.Enter);
-            System.Threading.Thread.Sleep(time * 6);
+            System.Threading.Thread.Sleep(time * 5);
 
             //agree policy
             //driver.FindElement(By.XPath("/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div/div/div[2]/div/div[1]/div/div[2]")).Click();
@@ -197,7 +202,59 @@ namespace taoGmailHa
             //driver.FindElement(By.Name("password")).SendKeys(Keys.Enter);
             WriteLineEmptyFile(mail,"pvas"+ threadPerTotalthread.Split(':')[0]);
             //WriteLinePostingLog(mail);
-            return mail;
+            return mail+"\t"+pass;
+        }
+
+        public static string GeneratePassword(int Length, int NonAlphaNumericChars)
+        {
+            string allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
+            string allowedNonAlphaNum = "!@#$%^&*()_-+=[{]};:<>|./?";
+            Random rd = new Random();
+
+            if (NonAlphaNumericChars > Length || Length <= 0 || NonAlphaNumericChars < 0)
+                throw new ArgumentOutOfRangeException();
+
+            char[] pass = new char[Length];
+            int[] pos = new int[Length];
+            int i = 0, j = 0, temp = 0;
+            bool flag = false;
+
+            //Random the position values of the pos array for the string Pass
+            while (i < Length - 1)
+            {
+                j = 0;
+                flag = false;
+                temp = rd.Next(0, Length);
+                for (j = 0; j < Length; j++)
+                    if (temp == pos[j])
+                    {
+                        flag = true;
+                        j = Length;
+                    }
+
+                if (!flag)
+                {
+                    pos[i] = temp;
+                    i++;
+                }
+            }
+
+            //Random the AlphaNumericChars
+            for (i = 0; i < Length - NonAlphaNumericChars; i++)
+                pass[i] = allowedChars[rd.Next(0, allowedChars.Length)];
+
+            //Random the NonAlphaNumericChars
+            for (i = Length - NonAlphaNumericChars; i < Length; i++)
+                pass[i] = allowedNonAlphaNum[rd.Next(0, allowedNonAlphaNum.Length)];
+
+            //Set the sorted array values by the pos array for the rigth posistion
+            char[] sorted = new char[Length];
+            for (i = 0; i < Length; i++)
+                sorted[i] = pass[pos[i]];
+
+            string Pass = new String(sorted);
+
+            return Pass;
         }
 
         private static void getVercode(int time, IWebDriver driver1, string phone, out string code,string threadPerTotalthread)

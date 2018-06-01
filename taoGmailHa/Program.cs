@@ -16,11 +16,11 @@ namespace taoGmailHa
     {
         static void Main(string[] args)
         {
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 1; j++)
             {
                 MyThread10[] thr = new MyThread10[100];
                 Thread[] tid = new Thread[100];
-                int numberThread = 3;
+                int numberThread = 1;
                 for (int i = 0; i < numberThread; i++)
                 {
                     thr[i] = new MyThread10();
