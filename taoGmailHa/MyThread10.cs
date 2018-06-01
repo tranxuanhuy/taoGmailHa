@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace taoGmailHa
@@ -142,6 +143,7 @@ namespace taoGmailHa
             string phone = "+84935939798";
             string idphone = "+639102714968";
             //getNewphonenumber(time, driver1, out phone,out idphone, threadPerTotalthread);
+            getNewphonenumberAPI(time, out phone, out idphone, threadPerTotalthread);
 
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("phoneNumberId")).SendKeys("+" + phone);
@@ -150,6 +152,7 @@ namespace taoGmailHa
 
             verCode = "370646";
             //getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
+            getVercodeAPI(time, idphone, out verCode, threadPerTotalthread);
 
             //neu sdt loading mai ca 4p ko co code
             if (verCode=="none")
@@ -157,9 +160,9 @@ namespace taoGmailHa
                 driver.Quit();
 
                 //xoa sdt trong trang sms.ru, bam nut do de xoa so
-                driver1.FindElement(By.Id("fail_" + idphone)).Click() ;
+                //driver1.FindElement(By.Id("fail_" + idphone)).Click() ;
                 
-                driver1.Quit();
+                //driver1.Quit();
                 return null;
             }
             System.Threading.Thread.Sleep(time);
@@ -203,6 +206,89 @@ namespace taoGmailHa
             WriteLineEmptyFile(mail,"pvas"+ threadPerTotalthread.Split(':')[0]);
             //WriteLinePostingLog(mail);
             return mail+"\t"+pass;
+        }
+
+        private static void getVercodeAPI(int time, string idphone, out string verCode, string threadPerTotalthread)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            verCode = "";
+            string responseFromServer = "STATUS_WAIT_CODE";
+            while (!responseFromServer.Contains("STATUS_OK"))
+            {
+                try
+                {
+                    // Create a request for the URL. 
+                    WebRequest request = WebRequest.Create("http://sms-activate.ru/stubs/handler_api.php?api_key=bA1A1324473d1Ac7447e520A92A27bf2&action=getStatus&id=" + idphone);
+
+                    // If required by the server, set the credentials.
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    // Get the response.
+                    WebResponse response = request.GetResponse();
+                    // Display the status.
+                    Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+                    // Get the stream containing content returned by the server.
+                    Stream dataStream = response.GetResponseStream();
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader = new StreamReader(dataStream);
+                    // Read the content.
+                    responseFromServer = reader.ReadToEnd();
+                    // Display the content.
+                    //Console.WriteLine(responseFromServer);
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("{0} Second exception caught.", e);
+                }
+
+                //neu ko lay duoc code, loading mai sau 4p
+                    if (stopwatch.Elapsed > TimeSpan.FromMinutes(4))
+                {
+                    verCode = "none";
+                    return ;
+                }
+            }
+            verCode = responseFromServer.Split(':')[1];
+
+        }
+
+        private static void getNewphonenumberAPI(int time, out string phone, out string idphone, string threadPerTotalthread)
+        {
+            phone = ""; idphone = "";
+            string responseFromServer = "";
+            while (!responseFromServer.Contains("ACCESS_NUMBER"))
+            {
+                try
+                {
+                    // Create a request for the URL. 
+                    WebRequest request = WebRequest.Create("http://sms-activate.ru/stubs/handler_api.php?api_key=bA1A1324473d1Ac7447e520A92A27bf2&action=getNumber&service=go&country=" + ReadFileAtLine(1, "config").Split(':')[1]);
+
+                    // If required by the server, set the credentials.
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    // Get the response.
+                    WebResponse response = request.GetResponse();
+                    // Display the status.
+                    Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+                    // Get the stream containing content returned by the server.
+                    Stream dataStream = response.GetResponseStream();
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader = new StreamReader(dataStream);
+                    // Read the content.
+                    responseFromServer = reader.ReadToEnd();
+                    // Display the content.
+                    //Console.WriteLine(responseFromServer);
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("{0} Second exception caught.", e);
+                }
+            }
+            phone = responseFromServer.Split(':')[2];
+            idphone = responseFromServer.Split(':')[1];
         }
 
         public static string GeneratePassword(int Length, int NonAlphaNumericChars)

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="bin\Debug\config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
