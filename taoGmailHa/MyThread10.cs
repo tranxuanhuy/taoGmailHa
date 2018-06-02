@@ -140,19 +140,19 @@ namespace taoGmailHa
             body.SendKeys( Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
 
 
-            string phone = "+84935939798";
+            string phone = "+84932546722";
             string idphone = "+639102714968";
             //getNewphonenumber(time, driver1, out phone,out idphone, threadPerTotalthread);
-            getNewphonenumberAPI(time, out phone, out idphone, threadPerTotalthread);
+            //getNewphonenumberAPI(time, out phone, out idphone, threadPerTotalthread);
 
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("phoneNumberId")).SendKeys("+" + phone);
             body = driver.FindElement(By.TagName("body"));
             body.SendKeys( Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
 
-            verCode = "370646";
+            verCode = "627953";
             //getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
-            getVercodeAPI(time, idphone, out verCode, threadPerTotalthread);
+            //getVercodeAPI(time, idphone, out verCode, threadPerTotalthread);
 
             //neu sdt loading mai ca 4p ko co code
             if (verCode=="none")
