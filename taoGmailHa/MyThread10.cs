@@ -140,19 +140,19 @@ namespace taoGmailHa
             body.SendKeys( Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
 
 
-            string phone = "+84935939798";
+            string phone = "+841675267907";
             string idphone = "+639102714968";
             //getNewphonenumber(time, driver1, out phone,out idphone, threadPerTotalthread);
-            getNewphonenumberAPI(time, out phone, out idphone, threadPerTotalthread);
+            //getNewphonenumberAPI(time, out phone, out idphone, threadPerTotalthread);
 
             System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("phoneNumberId")).SendKeys("+" + phone);
             body = driver.FindElement(By.TagName("body"));
             body.SendKeys( Keys.Tab + Keys.Tab + Keys.Tab + Keys.Enter);
 
-            verCode = "370646";
+            verCode = "824601";
             //getVercode(time, driver1, phone, out verCode, threadPerTotalthread);
-            getVercodeAPI(time, idphone, out verCode, threadPerTotalthread);
+            //getVercodeAPI(time, idphone, out verCode, threadPerTotalthread);
 
             //neu sdt loading mai ca 4p ko co code
             if (verCode=="none")
@@ -176,8 +176,10 @@ namespace taoGmailHa
             //driver.FindElement(By.Id("month")).Click();
             //System.Threading.Thread.Sleep(time);
             driver.FindElement(By.Id("month")).SendKeys("j");
-            driver.FindElement(By.Id("day")).SendKeys("10");
-            driver.FindElement(By.Id("year")).SendKeys("1990");
+            Random rand = new Random();
+            
+            driver.FindElement(By.Id("day")).SendKeys(rand.Next(1,28).ToString());
+            driver.FindElement(By.Id("year")).SendKeys(rand.Next(1962, 2000).ToString());
             driver.FindElement(By.Id("gender")).SendKeys("f");
             System.Threading.Thread.Sleep(time);
             //driver.FindElement(By.Id("gender")).SendKeys(Keys.Down);
@@ -243,8 +245,8 @@ namespace taoGmailHa
                     Console.WriteLine("{0} Second exception caught.", e);
                 }
 
-                //neu ko lay duoc code, loading mai sau 4p
-                    if (stopwatch.Elapsed > TimeSpan.FromMinutes(4))
+                //neu ko lay duoc code, loading mai sau 3p
+                    if (stopwatch.Elapsed > TimeSpan.FromMinutes(3))
                 {
                     verCode = "none";
                     return ;
