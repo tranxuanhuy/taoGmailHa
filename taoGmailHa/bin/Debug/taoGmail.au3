@@ -15,6 +15,15 @@ taoGmail()
 
 Func taoGmail()
 
+;~ 	;lay so phone
+	WriteEmptyFile("paramForcallingCSharp", "4") ;4 la xin c# tao 1 random password
+	FileDelete("pvasPassword")
+	Run("taoGmailHa.exe", "")
+	;cho den khi co pass
+	While Not FileExists("pvasPassword")
+		Sleep($time)
+	 WEnd
+
 	Local $oFF = _FFConnect()
 	Local $iCountLines = _FileCountLines("usaname.txt") ; Retrieve the number of lines in the current script.
 
@@ -26,8 +35,8 @@ Func taoGmail()
 	_FFSetValueById("lastName", ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)))
 	$username = ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)) & ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)) & Randomstring()
 	_FFSetValueById("username", $username)
-	_FFSetValueByName("Passwd", "B1nbin!@#2")
-	_FFSetValueByName("ConfirmPasswd", "B1nbin!@#2")
+	_FFSetValueByName("Passwd", ReadFileAtLine("pvasPassword",1))
+	_FFSetValueByName("ConfirmPasswd", ReadFileAtLine("pvasPassword",1))
 	Send("{tab}{tab}{enter}")
 	WriteEmptyFile("pvas0", $username)
 
