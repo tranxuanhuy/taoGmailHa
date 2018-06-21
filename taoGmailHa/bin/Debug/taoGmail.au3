@@ -16,152 +16,140 @@ taoGmail()
 Func taoGmail()
 
 	Local $oFF = _FFConnect()
-;~ 	Local $iCountLines = _FileCountLines("usaname.txt") ; Retrieve the number of lines in the current script.
+	Local $iCountLines = _FileCountLines("usaname.txt") ; Retrieve the number of lines in the current script.
 
-;~ 	_FFPrefSet("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0")
+	_FFPrefSet("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0")
 
-;~ 	_FFOpenURL("https://accounts.google.com/signUp?service=mail")
-;~ 	WinActivate("Create your Google Account - Mozilla Firefox")
-;~ 	_FFSetValueById("firstName", ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)))
-;~ 	_FFSetValueById("lastName", ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)))
-;~ 	$username = ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)) & ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)) & Randomstring()
-;~ 	_FFSetValueById("username", $username)
-;~ 	_FFSetValueByName("Passwd", "B1nbin!@#2")
-;~ 	_FFSetValueByName("ConfirmPasswd", "B1nbin!@#2")
-;~ 	Send("{tab}{tab}{enter}")
-;~ 	WriteEmptyFile("pvas0", $username)
+	_FFOpenURL("https://accounts.google.com/signUp?service=mail")
+	WinActivate("Create your Google Account - Mozilla Firefox")
+	_FFSetValueById("firstName", ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)))
+	_FFSetValueById("lastName", ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)))
+	$username = ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)) & ReadFileAtLine("usaname.txt", Random(1, $iCountLines, 1)) & Randomstring()
+	_FFSetValueById("username", $username)
+	_FFSetValueByName("Passwd", "B1nbin!@#2")
+	_FFSetValueByName("ConfirmPasswd", "B1nbin!@#2")
+	Send("{tab}{tab}{enter}")
+	WriteEmptyFile("pvas0", $username)
 
-	;lay so phone
-;~ 	WriteEmptyFile("paramForcallingCSharp", "3") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail,neu la 3 thi goi lay phone number sms.ru API
-;~ 	FileDelete("phonenumber")
-;~ 	Run("taoGmailHa.exe", "")
-;~ 	;cho den khi co phone
-;~ 	While Not FileExists("phonenumber")
-;~ 		Sleep($time)
-;~ 	WEnd
+;~ 	;lay so phone
+	WriteEmptyFile("paramForcallingCSharp", "3") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail,neu la 3 thi goi lay phone number sms.ru API
+	FileDelete("phonenumber")
+	Run("taoGmailHa.exe", "")
+	;cho den khi co phone
+	While Not FileExists("phonenumber")
+		Sleep($time)
+	WEnd
 
-;~ 	;dien so phone
-;~   While True
-;~         _FFXPath('/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div[1]/div/div[2]/div[1]/div/div[1]/input')
-;~         $result = _FFCmd('FFau3.xpath')
+	;dien so phone
+  While True
+        _FFXPath('/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div[1]/div/div[2]/div[1]/div/div[1]/input')
+        $result = _FFCmd('FFau3.xpath')
 
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~     WEnd
-;~ 	_FFSetValueById("phoneNumberId", "+"&ReadFileAtLine("phonenumber",1))
-;~ 	WinActivate("Create your Google Account - Mozilla Firefox")
-;~ 	_FFCmd('FFau3.xpath.focus()')
-;~ 	Send("{enter}")
+        If $result <> '' Then
+            ExitLoop
+        EndIf
+    WEnd
+	_FFSetValueById("phoneNumberId", "+"&ReadFileAtLine("phonenumber",1))
+	WinActivate("Create your Google Account - Mozilla Firefox")
+	_FFCmd('FFau3.xpath.focus()')
+	Send("{enter}")
 
-;~ 	;lay code
-;~ 	FileDelete("phonenumber")
-;~ 	WriteEmptyFile("paramForcallingCSharp", "0") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail
-;~ 	While Not FileExists("phonenumber")
-;~ 		Sleep($time)
-;~ 	WEnd
+	;lay code
+	FileDelete("phonenumber")
+	WriteEmptyFile("paramForcallingCSharp", "0") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail
+	While Not FileExists("phonenumber")
+		Sleep($time)
+	WEnd
 
-	;nhap code
-;~ 	  While True
-;~         _FFXPath('/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div[3]/div/div/div[1]/div/div[1]/input')
-;~         $result = _FFCmd('FFau3.xpath')
+;~ 	;nhap code
+	  While True
+        _FFXPath('/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div[3]/div/div/div[1]/div/div[1]/input')
+        $result = _FFCmd('FFau3.xpath')
 
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~     WEnd
-;~ 	WinActivate("Create your Google Account - Mozilla Firefox")
-;~ 	_FFSetValueById("code", ReadFileAtLine("phonenumber",1))
-;~ 		_FFCmd('FFau3.xpath.focus()')
-;~ 	Send("{enter}")
+        If $result <> '' Then
+            ExitLoop
+        EndIf
+    WEnd
+	WinActivate("Create your Google Account - Mozilla Firefox")
+	_FFSetValueById("code", ReadFileAtLine("phonenumber",1))
+		_FFCmd('FFau3.xpath.focus()')
+	Send("{enter}")
 
-	;dien info sau code, ngay thang nam sinh...
-;~  While True
-;~         _FFXPath('/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div[1]/div[1]/div[2]/div[1]/div/div[1]/input')
-;~         $result = _FFCmd('FFau3.xpath')
+;~ 	;dien info sau code, ngay thang nam sinh...
+ While True
+        _FFXPath('/html/body/div[1]/div/div[2]/div[1]/div[2]/form/div[2]/div/div[1]/div[1]/div[2]/div[1]/div/div[1]/input')
+        $result = _FFCmd('FFau3.xpath')
 
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~     WEnd
-;~ 	WinActivate("Create your Google Account - Mozilla Firefox")
-;~ 			_FFCmd('FFau3.xpath.focus()')
-;~ 	Send("^a{del}{tab}getcryptotab.com{ASC 064}gmail.com{tab}j{tab}1{tab}1991{tab}f{tab}{tab}{enter}")
+        If $result <> '' Then
+            ExitLoop
+        EndIf
+    WEnd
+	WinActivate("Create your Google Account - Mozilla Firefox")
+			_FFCmd('FFau3.xpath.focus()')
+	Send("^a{del}{tab}getcryptotab.com{ASC 064}gmail.com{tab}j{tab}1{tab}1991{tab}f{tab}{tab}{enter}")
 
-	;doan agree policy
-;~ While True
-;~         _FFXPath('/html/body/div[1]/div/div[2]')
-;~         $result = _FFCmd('FFau3.xpath')
+;~ 	;doan agree policy
+While True
+        _FFXPath('/html/body/div[1]/div/div[2]')
+        $result = _FFCmd('FFau3.xpath')
 
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~ WEnd
-;~  	WinActivate("Create your Google Account - Mozilla Firefox")
-;~ 			_FFCmd('FFau3.xpath.focus()')
-;~ 	Send("{tab}{end}{tab 8}{enter}")
+        If $result <> '' Then
+            ExitLoop
+        EndIf
+WEnd
+ 	WinActivate("Create your Google Account - Mozilla Firefox")
+			_FFCmd('FFau3.xpath.focus()')
+	Send("{tab}{end}")
+	Sleep($time/2)
+	Send("{tab 8}{enter}")
 
-;send forward den mail chu
-;~ 	Sleep($time * 4)
-;~ 	_FFOpenURL("https://mail.google.com/mail/?ui=html&zy=h")
-;~ While True
-;~         _FFXPath('/html/body/div[2]/form/p/input')
-;~         $result = _FFCmd('FFau3.xpath')
+;~ ;send forward den mail chu
+	Sleep($time * 4)
+	_FFOpenURL("https://mail.google.com/mail/?ui=html&zy=h")
+While True
+        _FFXPath('/html/body/div[2]/form/p/input')
+        $result = _FFCmd('FFau3.xpath')
 
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~ WEnd
-;~ _FFCmd('FFau3.xpath.click()')
-;~ Sleep($time)
-;~ 	_FFLinkClick("Settings", "text")
-;~ While True
-;~         _FFXPath('/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[6]/td[1]/a')
-;~         $result = _FFCmd('FFau3.xpath')
-
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~ WEnd
-;~ 	_FFLinkClick("Forwarding and POP/IMAP", "text")
-;~ 	_FFClick("addbutton", "id")
-;~ 	Sleep($time)
-;~ 	Send("{tab}getcryptotab.com{ASC 064}gmail.com{enter}")
-;~ 	Sleep($time * 2)
-;~ 	Send("{tab 2}{enter}")
-
-	;lay code forward
-;~ 	WriteEmptyFile("paramForcallingCSharp", "2") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail
-;~ 	Sleep($time)
-;~ 	$sFile = "codeforward"
-;~ 	$hFile = FileOpen($sFile, 2)
-;~ 	FileClose($hFile)
-;~ 	Run("taoGmailHa.exe", "")
-;~ 	$codeforward = ""
-;~ 	While $codeforward = ""
-;~ 		Sleep($time)
-;~ 		$codeforward = ReadFileAtLine($sFile, 1)
-;~ 	WEnd
-
-	;dien code forward
-
-;~ 	_FFOpenURL("https://mail.google.com/mail/?ui=html&zy=h")
-;~ Sleep($time)
-;~ 	_FFLinkClick("Settings", "text")
-;~ While True
-;~         _FFXPath('/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[6]/td[1]/a')
-;~         $result = _FFCmd('FFau3.xpath')
-
-;~         If $result <> '' Then
-;~             ExitLoop
-;~         EndIf
-;~ WEnd
-;~ 	_FFLinkClick("Forwarding and POP/IMAP", "text")
-
-;~ 	_FFSetValue($codeforward, "fwvc", "name")
-;~ 	_FFXPath('/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/p[3]/table/tbody/tr/td[2]/form[1]/input[6]')
-;~ _FFCmd('FFau3.xpath.click()')
+        If $result <> '' Then
+            ExitLoop
+        EndIf
+WEnd
+_FFCmd('FFau3.xpath.click()')
 Sleep($time)
+	_FFLinkClick("Settings", "text")
+Sleep($time)
+	_FFLinkClick("Forwarding and POP/IMAP", "text")
+	_FFClick("addbutton", "id")
+	Sleep($time)
+	Send("{tab}getcryptotab.com{ASC 064}gmail.com{enter}")
+	Sleep($time * 2)
+	Send("{tab 2}{enter}")
+
+;~ 	;lay code forward
+	WriteEmptyFile("paramForcallingCSharp", "2") ;neu la 1 thi goi lay phone number sms.ru, neu la 2 thi lay forward code gmail
+	Sleep($time)
+	$sFile = "codeforward"
+	$hFile = FileOpen($sFile, 2)
+	FileClose($hFile)
+	Run("taoGmailHa.exe", "")
+	$codeforward = ""
+	While $codeforward = ""
+		Sleep($time)
+		$codeforward = ReadFileAtLine($sFile, 1)
+	WEnd
+
+;~ 	;dien code forward
+
+	_FFOpenURL("https://mail.google.com/mail/?ui=html&zy=h")
+Sleep($time)
+	_FFLinkClick("Settings", "text")
+Sleep($time)
+	_FFLinkClick("Forwarding and POP/IMAP", "text")
+
+	_FFSetValue($codeforward, "fwvc", "name")
+	_FFXPath('/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/p[3]/table/tbody/tr/td[2]/form[1]/input[6]')
+_FFCmd('FFau3.xpath.click()')
+Sleep($time*1.5)
 _FFXPath('/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/form[1]/span[2]/label')
 _FFCmd('FFau3.xpath.click()')
 _FFXPath('/html/body/table[3]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/div/table/tbody/tr[2]/td[2]/form[1]/input[2]')
